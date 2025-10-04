@@ -8,8 +8,11 @@
 </head>
 <body>
 <div class="page-container">
-    <div class="header">Контакты</div>
-    <div class="nav">
+    <header class="header">
+        <h1>Контакты</h1>
+    </header>
+
+    <nav class="nav">
         <ul class="nav-list">
             <li class="nav-item"><a class="nav-link" href="../index.html">Главная</a></li>
             <li class="nav-item"><a class="nav-link" href="news.html">Новости</a></li>
@@ -17,14 +20,113 @@
             <li class="nav-item"><a class="nav-link" href="goods.html">Товары</a></li>
             <li class="nav-item"><a class="nav-link active" href="contacts.html">Контакты</a></li>
         </ul>
-    </div>
-    <div class="content">
+    </nav>
+
+    <main class="content">
         <h2 class="section-title">Связаться со мной</h2>
         <p>Email: <a href="mailto:test@mail.ru">krutoimail@mail.ru</a></p>
         <p>Адрес: г. Москва, ул. Примерная, 1</p>
-        <button class="skill-tag">Позвонить мне</button>
-    </div>
-    <div class="footer">Футер</div>
+        <button class="contact-button" onclick="contactModal.showModal()">Позвонить мне</button>
+    </main>
+
+    <footer class="footer">
+        <p>Футер</p>
+    </footer>
+
+    <dialog id="contactModal">
+        <div class="modal-header">
+            <h2>Форма обратной связи</h2>
+        </div>
+
+        <div class="modal-content">
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <label for="name">Имя <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Телефон <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (XXX) XXX-XX-XX">
+                </div>
+                <div class="form-group">
+                    <label for="email">Электронная почта <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="example@mail.ru">
+                </div>
+                <div class="form-group">
+                    <label for="category">Категория обращения <span class="required">*</span></label>
+                    <select id="category" name="category" required>
+                        <option value="">Выберите категорию</option>
+                        <option value="technical">Техническая поддержка</option>
+                        <option value="commercial">Коммерческое предложение</option>
+                        <option value="cooperation">Сотрудничество</option>
+                        <option value="complaint">Жалоба</option>
+                        <option value="suggestion">Предложение</option>
+                        <option value="other">Другое</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Текст обращения <span class="required">*</span></label>
+                    <textarea id="message" name="message" required placeholder="Опишите вашу проблему или вопрос..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <script>
+        const contactModal = document.getElementById('contactModal');
+        const feedbackForm = document.getElementById('feedbackForm');
+
+        function submitForm() {
+            const formData = new FormData(feedbackForm);
+
+            if (!feedbackForm.checkValidity()) {
+                feedbackForm.reportValidity();
+                return;
+            }
+
+            const data = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                category: formData.get('category'),
+                message: formData.get('message')
+            };
+
+            console.log('Данные формы:', data);
+
+            alert('Спасибо! Ваше обращение отправлено. Мы свяжемся с вами в ближайшее время.');
+
+            closeModal();
+
+            feedbackForm.reset();
+        }
+
+        function closeModal() {
+            contactModal.close();
+        }
+        contactModal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeModal();
+            }
+        });
+
+        feedbackForm.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && event.target.type !== 'textarea') {
+                event.preventDefault();
+            }
+        });
+
+        contactModal.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </div>
 </body>
 </html>
