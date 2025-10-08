@@ -76,7 +76,118 @@
             </form>
         </div>
     </dialog>
+    <script>
+        // Управление темой
+        class ThemeManager {
+            constructor() {
+                this.theme = localStorage.getItem('theme') || 'light';
+                this.init();
+            }
 
+            init() {
+                this.applyTheme(this.theme);
+                this.createThemeToggle();
+            }
+
+            applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+            }
+
+            toggleTheme() {
+                this.theme = this.theme === 'light' ? 'dark' : 'light';
+                this.applyTheme(this.theme);
+            }
+
+            createThemeToggle() {
+                const toggle = document.createElement('button');
+                toggle.className = 'theme-toggle__button';
+                toggle.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
+                toggle.addEventListener('click', () => {
+                    this.toggleTheme();
+                    toggle.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
+                });
+
+                const container = document.createElement('div');
+                container.className = 'theme-toggle';
+                container.appendChild(toggle);
+                document.body.appendChild(container);
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация менеджера темы
+            new ThemeManager();
+
+            // Добавление состояний для интерактивных элементов
+            const interactiveElements = document.querySelectorAll('.skill-tag, .experience-card, .product-card');
+
+            interactiveElements.forEach(element => {
+                // Добавляем состояние при клике
+                element.addEventListener('click', function() {
+                    if (this.classList.contains('skill-tag')) {
+                        this.classList.toggle('skill-tag--selected');
+                    } else if (this.classList.contains('experience-card')) {
+                        this.classList.toggle('experience-card--featured');
+                    } else if (this.classList.contains('product-card')) {
+                        this.classList.toggle('product-card--selected');
+                    }
+                });
+
+                // Добавляем состояние при фокусе
+                element.addEventListener('focus', function() {
+                    this.style.outline = `2px solid var(--color-primary)`;
+                    this.style.outlineOffset = '2px';
+                });
+
+                element.addEventListener('blur', function() {
+                    this.style.outline = 'none';
+                });
+            });
+
+            // Валидация форм
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    validateForm(this);
+                });
+            });
+
+            function validateForm(form) {
+                let isValid = true;
+                const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
+
+                inputs.forEach(input => {
+                    input.classList.remove('has-error', 'has-success');
+
+                    if (!input.value.trim()) {
+                        input.classList.add('has-error');
+                        isValid = false;
+                    } else {
+                        input.classList.add('has-success');
+                    }
+                });
+
+                return isValid;
+            }
+        });
+
+        // Функция для показа уведомлений
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
+            notification.style.zIndex = '1050';
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+    </script>
     <script>
         const contactModal = document.getElementById('contactModal');
         const feedbackForm = document.getElementById('feedbackForm');
