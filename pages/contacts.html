@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
+<div class="theme-toggle">
+    <button class="theme-toggle__button" id="themeToggle">🌙</button>
+</div>
 <div class="page-container">
     <header class="header">
         <h1>Контакты</h1>
@@ -77,49 +80,8 @@
         </div>
     </dialog>
     <script>
-        // Управление темой
-        class ThemeManager {
-            constructor() {
-                this.theme = localStorage.getItem('theme') || 'light';
-                this.init();
-            }
-
-            init() {
-                this.applyTheme(this.theme);
-                this.createThemeToggle();
-            }
-
-            applyTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-            }
-
-            toggleTheme() {
-                this.theme = this.theme === 'light' ? 'dark' : 'light';
-                this.applyTheme(this.theme);
-            }
-
-            createThemeToggle() {
-                const toggle = document.createElement('button');
-                toggle.className = 'theme-toggle__button';
-                toggle.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
-                toggle.addEventListener('click', () => {
-                    this.toggleTheme();
-                    toggle.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
-                });
-
-                const container = document.createElement('div');
-                container.className = 'theme-toggle';
-                container.appendChild(toggle);
-                document.body.appendChild(container);
-            }
-        }
-
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация менеджера темы
-            new ThemeManager();
-
             // Добавление состояний для интерактивных элементов
             const interactiveElements = document.querySelectorAll('.skill-tag, .experience-card, .product-card');
 
@@ -239,5 +201,59 @@
         });
     </script>
 </div>
+<script>
+    // Переключатель темы
+    class ThemeManager {
+        constructor() {
+            this.theme = localStorage.getItem('theme') || 'light';
+            this.init();
+        }
+
+        init() {
+            this.applyTheme(this.theme);
+            this.createThemeToggle();
+        }
+
+        applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        toggleTheme() {
+            this.theme = this.theme === 'light' ? 'dark' : 'light';
+            this.applyTheme(this.theme);
+            this.updateToggleButton();
+        }
+
+        createThemeToggle() {
+            // Создаем кнопку, если её нет, иначе используем существующую
+            let button = document.getElementById('themeToggle');
+            if (!button) {
+                button = document.createElement('button');
+                button.id = 'themeToggle';
+                button.className = 'theme-toggle__button';
+                const container = document.createElement('div');
+                container.className = 'theme-toggle';
+                container.appendChild(button);
+                document.body.appendChild(container);
+            }
+            // Назначаем обработчик и актуализируем иконку
+            button.onclick = () => this.toggleTheme();
+            this.updateToggleButton();
+        }
+
+        updateToggleButton() {
+            const button = document.getElementById('themeToggle');
+            if (button) {
+                button.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
+            }
+        }
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        new ThemeManager();
+    });
+</script>
 </body>
 </html>

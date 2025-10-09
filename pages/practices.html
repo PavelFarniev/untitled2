@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
+<div class="theme-toggle">
+    <button class="theme-toggle__button" id="themeToggle">🌙</button>
+</div>
 <div class="page-container">
     <div class="header">Практики</div>
     <div class="nav">
@@ -55,5 +58,59 @@
     </div>
     <div class="footer">Футер</div>
 </div>
+<script>
+    // Переключатель темы
+    class ThemeManager {
+        constructor() {
+            this.theme = localStorage.getItem('theme') || 'light';
+            this.init();
+        }
+
+        init() {
+            this.applyTheme(this.theme);
+            this.createThemeToggle();
+        }
+
+        applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        toggleTheme() {
+            this.theme = this.theme === 'light' ? 'dark' : 'light';
+            this.applyTheme(this.theme);
+            this.updateToggleButton();
+        }
+
+        createThemeToggle() {
+            // Создаем кнопку, если её нет, иначе используем существующую
+            let button = document.getElementById('themeToggle');
+            if (!button) {
+                button = document.createElement('button');
+                button.id = 'themeToggle';
+                button.className = 'theme-toggle__button';
+                const container = document.createElement('div');
+                container.className = 'theme-toggle';
+                container.appendChild(button);
+                document.body.appendChild(container);
+            }
+            // Назначаем обработчик и актуализируем иконку
+            button.onclick = () => this.toggleTheme();
+            this.updateToggleButton();
+        }
+
+        updateToggleButton() {
+            const button = document.getElementById('themeToggle');
+            if (button) {
+                button.innerHTML = this.theme === 'light' ? '🌙' : '☀️';
+            }
+        }
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        new ThemeManager();
+    });
+</script>
 </body>
 </html>
